@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Booklab 프로필 자동 생성기</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; max-width: 700px; margin: auto; }
+    label { display: block; margin-top: 14px; font-weight: bold; }
+    .row { display: flex; gap: 10px; margin-top: 4px; }
+    .row input[type="text"], .row select { flex: 1; padding: 6px; box-sizing: border-box; }
+    textarea { width: 100%; height: 160px; margin-top: 20px; }
+    button { margin-top: 20px; padding: 10px 16px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h2>Booklab 저자 프로필 자동 생성기</h2>
+  <p style="margin-top: -10px; margin-bottom: 20px; line-height: 1.6;">
+    프로필 작성이 부담스러우신가요?<br>
+    간단한 질문에 답하면 자동으로 완성됩니다.<br>
+    Booklab 프로필 자동 생성기를 이용해 손쉽게 나만의 프로필을 만들어 보세요.
+  </p>
+
+  <label>이름</label>
+  <input type="text" id="name">
+
+  <label>출생연도 및 지역</label>
+  <div class="row">
+    <input type="text" id="birth">
+    <select id="birthSuffix">
+      <option>에서 태어났다.</option>
+      <option>에서 태어나</option>
+    </select>
+  </div>
+
+  <label>성장 지역</label>
+  <div class="row">
+    <input type="text" id="grown">
+    <select id="grownSuffix">
+      <option>에서 자랐다.</option>
+    </select>
+  </div>
+
+  <label>졸업한 학교 1</label>
+  <div class="row">
+    <input type="text" id="univ1">
+    <select id="univ1Suffix">
+      <option>를 졸업하고</option>
+      <option>를 졸업했다.</option>
+      <option>를 거쳐</option>
+    </select>
+  </div>
+
+  <label>졸업한 학교 2</label>
+  <div class="row">
+    <input type="text" id="univ2">
+    <select id="univ2Suffix">
+      <option>를 졸업했다.</option>
+    </select>
+  </div>
+
+  <label>경력 1</label>
+  <div class="row">
+    <input type="text" id="career1">
+    <select id="career1Suffix">
+      <option>에서 근무했고</option>
+      <option>에서 근무했다.</option>
+      <option>를 거쳐</option>
+    </select>
+  </div>
+
+  <label>경력 2</label>
+  <div class="row">
+    <input type="text" id="career2">
+    <select id="career2Suffix">
+      <option>에서 근무했다.</option>
+    </select>
+  </div>
+
+  <label>현재 활동 1</label>
+  <div class="row">
+    <input type="text" id="now1">
+    <select id="now1Suffix">
+      <option>에서 일하고 있다.</option>
+      <option>에서 일하고</option>
+    </select>
+  </div>
+
+  <label>현재 활동 2</label>
+  <div class="row">
+    <input type="text" id="now2">
+    <select id="now2Suffix">
+      <option>으로 일하고 있다.</option>
+    </select>
+  </div>
+
+  <label>대표 논문 및 저서</label>
+  <textarea id="publications"></textarea>
+
+  <button onclick="generateProfile()">프로필 자동 생성</button>
+
+  <h3>자동 생성된 프로필</h3>
+  <textarea id="result" readonly></textarea>
+
+  <script>
+    function get(id) {
+      return document.getElementById(id).value.trim();
+    }
+
+    function cleanSpacing(text) {
+      return text.replace(/\s{2,}/g, ' ').replace(/([가-힣])([A-Z])/g, '$1 $2');
+    }
+
+    function generateProfile() {
+      let profile = get('name') + "\n\n";
+
+      let body = "";
+      if (get('birth')) body += get('birth') + get('birthSuffix') + " ";
+      if (get('grown')) body += get('grown') + get('grownSuffix') + " ";
+      if (get('univ1')) body += get('univ1') + get('univ1Suffix') + " ";
+      if (get('univ2')) body += get('univ2') + get('univ2Suffix') + " ";
+      if (get('career1')) body += get('career1') + get('career1Suffix') + " ";
+      if (get('career2')) body += get('career2') + get('career2Suffix') + " ";
+      if (get('now1')) body += get('now1') + get('now1Suffix') + " ";
+      if (get('now2')) body += get('now2') + get('now2Suffix');
+
+      profile += cleanSpacing(body.trim()) + "\n\n";
+
+      if (get('publications')) {
+        profile += "대표 논문 및 저서:\n" + get('publications');
+      }
+
+      document.getElementById('result').value = profile;
+    }
+  </script>
+</body>
+</html>
