@@ -148,7 +148,7 @@
 
     function generateProfile() {
       let profile = get('name') + "\n\n";
-      if (get('selfIntro')) profile += get('selfIntro') + "\\n\\n";
+      if (get('selfIntro')) profile += get('selfIntro') + "\n\\n";
 
       let body = "";
       if (get('birth')) body += get('birth') + get('birthSuffix') + " ";
