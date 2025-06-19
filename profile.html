@@ -22,6 +22,40 @@
 
   <label>이름</label>
   <input type="text" id="name">
+  <script>
+    function setSelfIntro(value) {
+      if (value) {
+       document.getElementById('selfIntro').value = value;
+    }
+  }
+  </script>
+  
+  <label>한 줄로 나를 소개하면?</label>
+  <div class="row">
+    <input type="text" id="selfIntro" placeholder="직접 입력하거나 아래에서 선택하세요">
+    <select id="selfIntroSelect" onchange="setSelfIntro(this.value)">
+      <option value="">문장을 선택하세요</option>
+      <option value="나는 지혜로운 사색가입니다.">나는 지혜로운 사색가입니다.</option>
+      <option value="나는 세상을 떠돌아 다니는 진정한 여행가입니다.">나는 세상을 떠돌아 다니는 진정한 여행가입니다.</option>
+      <option value="나는 밥보다 책을 더 좋아하는 애독가입니다.">나는 밥보다 책을 더 좋아하는 애독가입니다.</option>
+      <option value="나는 고양이처럼 조용히 세상을 관찰하는 작가입니다.">나는 고양이처럼 조용히 세상을 관찰하는 작가입니다.</option>
+      <option value="나는 낯선 곳에서 나를 발견하는 이야기꾼입니다.">나는 낯선 곳에서 나를 발견하는 이야기꾼입니다.</option>
+      <option value="나는 감정의 결을 따라 글을 쓰는 감성 큐레이터입니다.">나는 감정의 결을 따라 글을 쓰는 감성 큐레이터입니다.</option>
+      <option value="나는 활자 속에서 인생을 발견하는 탐험가입니다.">나는 활자 속에서 인생을 발견하는 탐험가입니다.</option>
+      <option value="나는 매일 새로운 문장을 발굴하는 단어 채집가입니다.">나는 매일 새로운 문장을 발굴하는 단어 채집가입니다.</option>
+      <option value="나는 일상에서 찬란한 순간을 건지는 생활 예술가입니다.">나는 일상에서 찬란한 순간을 건지는 생활 예술가입니다.</option>
+      <option value="나는 관찰하고 기록하는 것이 취미인 일기 장인입니다.">나는 관찰하고 기록하는 것이 취미인 일기 장인입니다.</option>
+      <option value="나는 고요한 문장에 나를 숨기는 은둔형 창작자입니다.">나는 고요한 문장에 나를 숨기는 은둔형 창작자입니다.</option>
+      <option value="나는 활자 중독자입니다. 커피보다 책이 먼저입니다.">나는 활자 중독자입니다. 커피보다 책이 먼저입니다.</option>
+      <option value="나는 잊히는 것을 두려워하는 이야기 수집가입니다.">나는 잊히는 것을 두려워하는 이야기 수집가입니다.</option>
+      <option value="나는 과거의 흔적에서 미래를 꿰뚫어보는 시간여행자입니다.">나는 과거의 흔적에서 미래를 꿰뚫어보는 시간여행자입니다.</option>
+      <option value="나는 하루 한 문장으로 마음을 정리하는 사람입니다.">나는 하루 한 문장으로 마음을 정리하는 사람입니다.</option>
+      <option value="나는 글로 세상을 바꾸고 싶은 낭만주의자입니다.">나는 글로 세상을 바꾸고 싶은 낭만주의자입니다.</option>
+      <option value="나는 침묵 속에서 이야기를 들려주는 조용한 연설가입니다.">나는 침묵 속에서 이야기를 들려주는 조용한 연설가입니다.</option>
+      <option value="나는 관찰과 상상으로 세계를 재해석하는 저널리스트입니다.">나는 관찰과 상상으로 세계를 재해석하는 저널리스트입니다.</option>
+      <option value="나는 마음의 골짜기를 건너 문장 하나로 위로를 건넵니다.">나는 마음의 골짜기를 건너 문장 하나로 위로를 건넵니다.</option>
+  </select>
+</div>
 
   <label>출생연도 및 지역</label>
   <div class="row">
@@ -114,6 +148,7 @@
 
     function generateProfile() {
       let profile = get('name') + "\n\n";
+      if (get('selfIntro')) profile += get('selfIntro') + "\\n\\n";
 
       let body = "";
       if (get('birth')) body += get('birth') + get('birthSuffix') + " ";
