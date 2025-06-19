@@ -1,4 +1,4 @@
-
+  
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -168,8 +168,6 @@
 
     function generateProfile() {
       let profile = get('name') + "\n\n";
-      if (get('selfIntro')) profile += get('selfIntro') + "\n\n";
-      if (get('motive')) profile += get('motive') + "\n\n";
 
       let body = "";
       if (get('birth')) body += get('birth') + get('birthSuffix') + " ";
@@ -181,6 +179,9 @@
       if (get('now1')) body += get('now1') + get('now1Suffix') + " ";
       if (get('now2')) body += get('now2') + get('now2Suffix');
       profile += cleanSpacing(body.trim()) + "\n\n";
+
+      if (get('selfIntro')) profile += "한 줄 소개: " + get('selfIntro') + "\n\n";
+      if (get('motive')) profile += "집필 동기: " + get('motive') + "\n\n";
 
       if (get('publications')) {
         profile += "대표 논문 및 저서:\n" + get('publications') + "\n\n";
