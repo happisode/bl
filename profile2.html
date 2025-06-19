@@ -177,13 +177,13 @@
       if (get('career2')) body += get('career2') + get('career2Suffix') + " ";
       if (get('now1')) body += get('now1') + get('now1Suffix') + " ";
       if (get('now2')) body += get('now2') + get('now2Suffix');
-      profile += cleanSpacing(body.trim()) + "\n";
+      profile += cleanSpacing(body.trim()) + "\n\n";
 
       if (get('selfIntro')) profile += "한 줄 소개: " + get('selfIntro') + "\n";
-      if (get('motive')) profile += "집필 동기: " + get('motive') + "\n";
+      if (get('motive')) profile += "집필 동기: " + get('motive') + "\n\n";
 
       if (get('publications')) {
-        profile += "대표 논문 및 저서:\n" + get('publications') + "\n";
+        profile += "대표 논문 및 저서: " + get('publications') + "\n\n";
       }
       if (get('sns')) {
         profile += "SNS: " + get('sns');
