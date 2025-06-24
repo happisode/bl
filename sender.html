@@ -241,42 +241,58 @@
             transform: scale(1.1);
         }
 
-        .file-upload-area {
-            border: 2px dashed #cbd5e0;
+        /* 파일 업로드 영역을 파일 정보 표시 영역으로 변경 */
+        .file-info-area {
+            border: 2px solid #e2e8f0;
             border-radius: 12px;
-            padding: 30px 20px;
+            padding: 24px;
             text-align: center;
             background: #f8fafc;
-            transition: all 0.3s ease;
-            cursor: pointer;
+            margin-bottom: 20px;
         }
 
-        .file-upload-area:hover {
-            border-color: #667eea;
-            background: #ebf4ff;
+        .file-info-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
-        .file-upload-area.dragover {
-            border-color: #667eea;
-            background: #ebf4ff;
-            transform: scale(1.02);
+        .file-info-table th {
+            background: #4a5568;
+            color: white;
+            padding: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
         }
 
-        .file-upload-icon {
-            font-size: 36px;
-            color: #a0aec0;
-            margin-bottom: 12px;
-        }
-
-        .file-upload-text {
-            color: #4a5568;
-            font-size: 15px;
-            margin-bottom: 6px;
-        }
-
-        .file-upload-hint {
+        .file-info-table td {
+            padding: 20px 12px;
+            text-align: center;
             color: #718096;
-            font-size: 13px;
+            font-size: 14px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .file-info-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .file-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: #a0aec0;
+            font-size: 16px;
+        }
+
+        .file-icon {
+            font-size: 24px;
+            color: #cbd5e0;
         }
 
         .captcha-group {
@@ -387,6 +403,12 @@
             .radio-item {
                 min-width: auto;
             }
+
+            .file-info-table th,
+            .file-info-table td {
+                padding: 8px;
+                font-size: 12px;
+            }
         }
     </style>
 </head>
@@ -476,14 +498,31 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">파일첨부</label>
-                    <div class="file-upload-area" onclick="document.getElementById('fileInput').click()">
-                        <div class="file-upload-icon">📎</div>
-                        <div class="file-upload-text">파일을 선택하거나 드래그해서 업로드하세요</div>
-                        <div class="file-upload-hint">이미지, 문서, 압축파일 등을 첨부할 수 있습니다</div>
-                        <input type="file" id="fileInput" style="display: none;" multiple />
+                    <label class="form-label">파일 정보</label>
+                    <div class="file-info-area">
+                        <table class="file-info-table">
+                            <thead>
+                                <tr>
+                                    <th>파일명</th>
+                                    <th>상태</th>
+                                    <th>크기</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="3">
+                                        <div class="file-status">
+                                            <span class="file-icon">📋</span>
+                                            <span>업로드된 파일이 없습니다</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div style="margin-top: 12px; font-size: 12px; color: #a0aec0;">
+                            0% &nbsp;&nbsp;&nbsp;&nbsp; 0 kb
+                        </div>
                     </div>
-                    <div id="fileList" style="margin-top: 12px;"></div>
                 </div>
 
                 <div class="form-group">
@@ -533,59 +572,6 @@
                 this.closest('.radio-item').classList.add('selected');
             });
         });
-
-        // 파일 업로드 처리
-        const fileInput = document.getElementById('fileInput');
-        const fileList = document.getElementById('fileList');
-        const fileUploadArea = document.querySelector('.file-upload-area');
-
-        fileInput.addEventListener('change', handleFileSelect);
-
-        // 드래그 앤 드롭 처리
-        fileUploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            fileUploadArea.classList.add('dragover');
-        });
-
-        fileUploadArea.addEventListener('dragleave', () => {
-            fileUploadArea.classList.remove('dragover');
-        });
-
-        fileUploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            fileUploadArea.classList.remove('dragover');
-            handleFileSelect({ target: { files: e.dataTransfer.files } });
-        });
-
-        function handleFileSelect(e) {
-            const files = e.target.files;
-            fileList.innerHTML = '';
-            
-            for (let i = 0; i < files.length; i++) {
-                const file = files[i];
-                const fileItem = document.createElement('div');
-                fileItem.style.cssText = `
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    padding: 8px 12px;
-                    background: #f7fafc;
-                    border: 1px solid #e2e8f0;
-                    border-radius: 6px;
-                    margin-bottom: 6px;
-                    font-size: 13px;
-                `;
-                
-                fileItem.innerHTML = `
-                    <span>${file.name} (${(file.size / 1024).toFixed(1)} KB)</span>
-                    <button type="button" onclick="this.parentElement.remove()" 
-                            style="background: #e53e3e; color: white; border: none; 
-                                   border-radius: 4px; padding: 4px 8px; font-size: 12px; cursor: pointer;">삭제</button>
-                `;
-                
-                fileList.appendChild(fileItem);
-            }
-        }
 
         // 폼 제출 처리
         document.getElementById('myform').addEventListener('submit', function(e) {
