@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+
+<style id="webmakerstyle">
+
+</style>
+</head>
+<body>
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+  /* 기본 테이블 스타일 */
+  .quick-input-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: sans-serif;
+  }
+
+  .quick-input-table th, .quick-input-table td {
+    border-bottom: 1px solid #eee;
+    padding: 12px;
+    text-align: left;
+  }
+
+  /* 관리 버튼의 기본 상태: 숨김(투명도 0) */
+  .action-buttons {
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+    text-align: right;
+  }
+
+  /* 행(tr)에 마우스를 올렸을 때(hover) 버튼을 보여줌 */
+  .quick-input-table tr:hover {
+    background-color: #f9f9f9;
+  }
+
+  .quick-input-table tr:hover .action-buttons {
+    opacity: 1;
+  }
+
+  /* 버튼 디자인 요약 */
+  .btn {
+    padding: 4px 8px;
+    margin-left: 4px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
+    font-size: 12px;
+    color: #666;
+  }
+
+  .btn:hover {
+    background: #f0f0f0;
+    color: #333;
+  }
+  
+  .btn-delete:hover {
+    color: #d9534f;
+    border-color: #d9534f;
+  }
+</style>
+</head>
+<body>
+
+<h3>빠른 입력 관리 (개선안: 호버 액션)</h3>
+<table class="quick-input-table">
+  <thead>
+    <tr>
+      <th>내용 (클릭 시 입력)</th>
+      <th style="width: 150px;"></th> </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>식대 (점심 식사)</td>
+      <td class="action-buttons">
+        <button class="btn">보기</button>
+        <button class="btn">수정</button>
+        <button class="btn btn-delete">삭제</button>
+      </td>
+    </tr>
+    <tr>
+      <td>비품 구매 (A4 용지)</td>
+      <td class="action-buttons">
+        <button class="btn">보기</button>
+        <button class="btn">수정</button>
+        <button class="btn btn-delete">삭제</button>
+      </td>
+    </tr>
+    <tr>
+      <td>정기 구독료 (SW)</td>
+      <td class="action-buttons">
+        <button class="btn">보기</button>
+        <button class="btn">수정</button>
+        <button class="btn btn-delete">삭제</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+</body>
+</html>
+
+
+</body>
+</html>
