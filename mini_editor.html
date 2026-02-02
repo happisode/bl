@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+
+<style id="webmakerstyle">
+
+</style>
+</head>
+<body>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>제안서 NO 수동 입력기</title>
+    <style>
+        table { border-collapse: collapse; width: 500px; font-family: sans-serif; font-size: 13px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+        th { background-color: #f4f4f4; }
+        /* 입력창 스타일 */
+        .input-box { width: 80px; padding: 4px; border: 1px solid #ff4d4d; border-radius: 3px; }
+        /* 삭제 버튼 스타일 */
+        .btn-del { margin-left: 5px; cursor: pointer; color: red; font-weight: bold; border: none; background: none; }
+    </style>
+</head>
+<body>
+
+<h3>출판계약서 관리 - 제안서 NO 입력</h3>
+<table>
+    <thead>
+        <tr>
+            <th>계약서 제목</th>
+            <th>계약자명</th>
+            <th>제안서 NO</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Can You Help Me?</td>
+            <td>이지은</td>
+            <td>PRB906</td>
+        </tr>
+        <tr>
+            <td>서울시의원 아무나 하나</td>
+            <td>박상현</td>
+            <td id="target-cell" onclick="enableEdit()">
+                <span id="display-text" style="color:#aaa; cursor:pointer;">[클릭하여 입력]</span>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<script>
+    function enableEdit() {
+        const cell = document.getElementById('target-cell');
+        const display = document.getElementById('display-text');
+        
+        // 이미 입력 중이면 중복 실행 방지
+        if (document.getElementById('edit-input')) return;
+
+        // 현재 텍스트 가져오기 (초기값 제외)
+        const currentVal = (display.innerText === '[클릭하여 입력]') ? '' : display.innerText;
+        
+        // 입력창과 삭제 버튼 생성
+        cell.innerHTML = `
+            <input type="text" id="edit-input" class="input-box" value="${currentVal}" placeholder="번호 입력">
+            <button class="btn-del" onclick="deleteVal(event)">×</button>
+        `;
+        
+        const input = document.getElementById('edit-input');
+        input.focus();
+
+        // 엔터 키를 누르면 저장
+        input.onkeydown = function(e) {
+            if (e.key === 'Enter') {
+                saveVal(this.value);
+            }
+        };
+
+        // 포커스를 잃으면 자동 저장 (필요 시)
+        input.onblur = function() {
+            if (this.value === '') {
+                resetCell();
+            } else {
+                saveVal(this.value);
+            }
+        };
+    }
+
+    function saveVal(val) {
+        const cell = document.getElementById('target-cell');
+        if (val.trim() === '') {
+            resetCell();
+        } else {
+            cell.innerHTML = `<span id="display-text" onclick="enableEdit()" style="cursor:pointer; font-weight:bold;">${val}</span>`;
+        }
+    }
+
+    function deleteVal(event) {
+        event.stopPropagation(); // 셀 클릭 이벤트 전파 방지
+        resetCell();
+    }
+
+    function resetCell() {
+        const cell = document.getElementById('target-cell');
+        cell.innerHTML = `<span id="display-text" onclick="enableEdit()" style="color:#aaa; cursor:pointer;">[클릭하여 입력]</span>`;
+    }
+</script>
+
+</body>
+</html>
+
+
+</body>
+</html>
