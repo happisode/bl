@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+
+<style id="webmakerstyle">
+
+</style>
+</head>
+<body>
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>정규식으로 판형/사양 자동 입력</title>
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", Arial, sans-serif; margin: 24px; }
+    .wrap { display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px; }
+    textarea, input { width: 100%; box-sizing: border-box; padding: 10px; font-size: 14px; }
+    textarea { min-height: 160px; }
+    .card { border: 1px solid #ddd; border-radius: 10px; padding: 14px; }
+    label { display:block; font-weight:700; margin: 10px 0 6px; }
+    .hint { color:#666; font-size:12px; line-height:1.45; margin-top:8px; }
+    .ok { color:#0a7; font-weight:700; }
+    .bad { color:#c33; font-weight:700; }
+    code { background:#f6f6f6; padding:2px 6px; border-radius:6px; }
+  </style>
+</head>
+<body>
+  <h2>문장 파싱 → 판형/사양 자동 입력(라디오 없이)</h2>
+
+  <div class="wrap">
+    <div class="card">
+      <label for="src">설명 문장</label>
+      <textarea id="src" placeholder="예) 판형은 시집(128*205mm)으로 흑백 1도 200페이지 이내로 편집하는 기준입니다."></textarea>
+      <div id="status" class="hint">대기 중…</div>
+      <div class="hint">
+        판형 프리셋: <code>신국판</code>, <code>국판</code>, <code>시집</code>, <code>교재</code><br/>
+        사양 예시: <code>흑백 1도 200페이지 이내</code>, <code>흑백 1도 210페이지 이내(컬러 15페이지 포함)</code>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>자동 입력되는 필드</h3>
+
+      <label for="sizeField">판형</label>
+      <input id="sizeField" placeholder="예) 시집(128*205mm)" />
+
+      <label for="specField">사양</label>
+      <input id="specField" placeholder="예) 흑백 1도 200페이지 이내" />
+
+      <div class="hint">
+        실제 적용 시에는 귀사 폼의 input id/name에 맞춰 연결하면 됩니다.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 질문에서 주신 4개 판형(프리셋)
+    const SIZE_PRESET = {
+      "신국판": { w: 152, h: 225 },
+      "국판":   { w: 148, h: 210 },
+      "시집":   { w: 128, h: 205 },
+      "교재":   { w: 182, h: 257 }
+    };
+
+    const src = document.getElementById("src");
+    const sizeField = document.getElementById("sizeField");
+    const specField = document.getElementById("specField");
+    const status = document.getElementById("status");
+
+    // 곱셈기호 통일: ×, x, X, · 등을 *로
+    function normalizeDimText(s) {
+      return s
+        .replace(/\s+/g, "")
+        .replace(/[×xX·]/g, "*")
+        .replace(/\*+/g, "*");
+    }
+
+    function setStatus(okParts, failParts) {
+      const ok = okParts.length ? `<span class="ok">입력:</span> ${okParts.join(", ")}` : "";
+      const bad = failParts.length ? `<span class="bad">실패:</span> ${failParts.join(", ")}` : "";
+      status.innerHTML = [ok, bad].filter(Boolean).join(" / ") || "대기 중…";
+    }
+
+    function parseSize(text) {
+      // 1) 판형명 + 괄호 규격이 있으면 우선 사용
+      // 예: "시집(128*205mm)", "신국판(152×225㎜)" 등
+      const explicitRe = /(신국판|국판|시집|교재)\s*\(\s*([0-9]{2,3}\s*[×xX\*]\s*[0-9]{2,3})\s*(?:mm|㎜)?\s*\)/;
+      const m1 = text.match(explicitRe);
+      if (m1) {
+        const type = m1[1];
+        const dim = normalizeDimText(m1[2]); // "128*205"
+        return `${type}(${dim}mm)`;
+      }
+
+      // 2) 괄호 규격이 없고 키워드만 있으면 프리셋으로 보완
+      for (const type of Object.keys(SIZE_PRESET)) {
+        if (text.includes(type)) {
+          const { w, h } = SIZE_PRESET[type];
+          return `${type}(${w}*${h}mm)`;
+        }
+      }
+
+      return "";
+    }
+
+    function parseSpec(text) {
+      // 사양 파싱:
+      // (1) 흑백/컬러/칼라 + n도 + n페이지(or p/page) + 이내
+      // (2) '이내' 뒤에 괄호(...) 옵션이 있으면 포함
+      // 예: "흑백 1도 210페이지 이내(컬러 15페이지 포함)"
+      const specRe =
+        /(흑백|컬러|칼라)\s*([0-9]+)\s*도\s*([0-9]+)\s*(?:페이지|page|p)\s*이내(\s*\([^)]*\))?/i;
+
+      const m = text.match(specRe);
+      if (!m) return "";
+
+      const color = m[1] === "칼라" ? "컬러" : m[1];
+      const ink = m[2];
+      const pages = m[3];
+      const tailParen = (m[4] || "").trim(); // "(컬러 15페이지 포함)" 같은 부분
+
+      return `${color} ${ink}도 ${pages}페이지 이내${tailParen ? tailParen : ""}`;
+    }
+
+    function applyParsing(text) {
+      const ok = [];
+      const fail = [];
+
+      const sizeVal = parseSize(text);
+      if (sizeVal) { sizeField.value = sizeVal; ok.push("판형"); }
+      else { fail.push("판형"); }
+
+      const specVal = parseSpec(text);
+      if (specVal) { specField.value = specVal; ok.push("사양"); }
+      else { fail.push("사양"); }
+
+      setStatus(ok, fail);
+    }
+
+    src.addEventListener("input", e => applyParsing(e.target.value));
+
+    // 데모 초기값(질문 예시)
+    src.value = "판형은 국판(148*210mm)으로 페이지당 21줄, 11포인트로 흑백 1도 210페이지 이내(컬러 15페이지 포함)로 편집하는 기준입니다.";
+    applyParsing(src.value);
+  </script>
+</body>
+</html>
+
+
+
+</body>
+</html>
