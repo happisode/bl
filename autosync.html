@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+
+<style id="webmakerstyle">
+
+</style>
+</head>
+<body>
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>출판기 계산기 → 출판 제안서 자동 복사(필드 최소화/하이라이트)</title>
+  <style>
+    :root { --gap:14px; --hl:#fff3b0; --hlBorder:#f59e0b; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin:0; background:#f6f7f9; }
+    header { padding:16px 20px; background:#111827; color:#fff; }
+    .wrap { padding:20px; }
+    .grid { display:grid; grid-template-columns: 1.2fr 1fr; gap:var(--gap); align-items:start; }
+    .card { background:#fff; border:1px solid #e5e7eb; border-radius:12px; box-shadow: 0 2px 10px rgba(0,0,0,.04); overflow:hidden; }
+    .card h2 { margin:0; padding:14px 16px; font-size:16px; border-bottom:1px solid #e5e7eb; background:#f9fafb; }
+    .form { padding:14px 16px; }
+    .row { display:grid; grid-template-columns: 130px 1fr; gap:10px; padding:6px 0; align-items:center; }
+    label { color:#374151; font-size:13px; }
+    input, select {
+      width:100%; box-sizing:border-box;
+      border:1px solid #d1d5db; border-radius:10px;
+      padding:9px 10px; font-size:14px; background:#fff;
+    }
+    .muted { color:#6b7280; font-size:12px; margin-top:10px; line-height:1.45; }
+    .badge { display:inline-block; font-size:12px; padding:2px 8px; border-radius:999px; background:#eef2ff; color:#3730a3; margin-left:8px; }
+    .hr { height:1px; background:#e5e7eb; margin:12px 0; }
+    .rightTop { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .btn {
+      border:1px solid #d1d5db; background:#fff; border-radius:10px;
+      padding:8px 10px; cursor:pointer; font-size:13px;
+    }
+    .btn:active { transform: translateY(1px); }
+    .note { font-size:12px; color:#6b7280; }
+
+    /* ✅ 자동 복사 대상 필드 하이라이트 */
+    .sync-field label::after{
+      content:" (SYNC)";
+      font-size:11px;
+      color:#b45309;
+      margin-left:6px;
+      font-weight:600;
+    }
+    .sync-field input, .sync-field select{
+      background: var(--hl);
+      border-color: var(--hlBorder);
+      box-shadow: 0 0 0 2px rgba(245,158,11,.15);
+    }
+
+    /* 제안서 쪽은 읽기 전용 느낌 */
+    .proposal input { background:#fffbe6; }
+    .proposal .sync-field input { background: var(--hl); } /* SYNC는 더 진하게 */
+  </style>
+</head>
+<body>
+<header>
+  <strong>출판기 계산기</strong> → <strong>출판 제안서</strong> 자동 메모(실시간 복사)
+</header>
+
+<div class="wrap">
+  <div class="grid">
+    <!-- LEFT: 제안서 -->
+    <section class="card proposal">
+      <h2>출판 제안서 <span class="badge">자동 입력</span></h2>
+      <div class="form">
+        <!-- ✅ SYNC: 비용 -->
+        <div class="row sync-field">
+          <label for="p_cost">비용</label>
+          <input id="p_cost" placeholder="예: 200만 원" />
+        </div>
+
+        <!-- ✅ SYNC: 표지 -->
+        <div class="row sync-field">
+          <label for="p_cover">표지</label>
+          <input id="p_cover" placeholder="예: 아트지 230g/컬러 4도/무광코팅 (에폭시)" />
+        </div>
+
+        <!-- ✅ SYNC: 제본 -->
+        <div class="row sync-field">
+          <label for="p_binding">제본</label>
+          <input id="p_binding" placeholder="예: 무선제본" />
+        </div>
+
+        <!-- ✅ SYNC: 증정본 -->
+        <div class="row sync-field">
+          <label for="p_gift">증정본</label>
+          <input id="p_gift" placeholder="예: 40부" />
+        </div>
+
+        <div class="muted">
+          노란색(SYNC) 표시된 항목이 자동 복사 대상입니다.<br/>
+          에폭시가 “예”이면 ‘표지’ 끝에 <b>(에폭시)</b>를 자동으로 붙입니다.
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT: 계산기 -->
+    <section class="card">
+      <h2 class="rightTop">
+        <span>출판비용 셀프 계산기</span>
+        <button class="btn" type="button" id="btn_reset">초기화</button>
+      </h2>
+
+      <div class="form">
+        <!-- ✅ SYNC SOURCE: 비용 -->
+        <div class="row sync-field">
+          <label for="c_est_cost">총 예상 비용</label>
+          <input id="c_est_cost" value="3,440,000원" />
+        </div>
+
+        <div class="hr"></div>
+
+        <!-- ✅ SYNC SOURCE: 표지 -->
+        <div class="row sync-field">
+          <label for="c_cover_base">표지 재질/사양</label>
+          <input id="c_cover_base" value="아트지 230g/컬러 4도/무광코팅" />
+        </div>
+
+        <!-- ✅ SYNC SOURCE: 에폭시 -->
+        <div class="row sync-field">
+          <label for="c_epoxy">표지 에폭시</label>
+          <select id="c_epoxy">
+            <option value="아니오" selected>아니오</option>
+            <option value="예">예</option>
+          </select>
+        </div>
+
+        <!-- ✅ SYNC SOURCE: 제본 -->
+        <div class="row sync-field">
+          <label for="c_binding">제본</label>
+          <select id="c_binding">
+            <option value="무선제본" selected>무선제본</option>
+            <option value="양장제본">양장제본</option>
+            <option value="중철제본">중철제본</option>
+          </select>
+        </div>
+
+        <!-- ✅ SYNC SOURCE: 증정본 -->
+        <div class="row sync-field">
+          <label for="c_gift">증정본(기본 40부)</label>
+          <input id="c_gift" type="number" value="40" min="0" />
+        </div>
+
+        <div class="note">
+          * 노란색(SYNC) 표시된 필드가 ‘출판 제안서’로 자동 복사됩니다.
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+  const el = (id) => document.getElementById(id);
+
+  // ====== 제안서(LEFT, TARGETS) ======
+  const p_cost    = el("p_cost");
+  const p_cover   = el("p_cover");
+  const p_binding = el("p_binding");
+  const p_gift    = el("p_gift");
+
+  // ====== 계산기(RIGHT, SOURCES) ======
+  const c_est_cost   = el("c_est_cost");
+  const c_cover_base = el("c_cover_base");
+  const c_epoxy      = el("c_epoxy");
+  const c_binding    = el("c_binding");
+  const c_gift       = el("c_gift");
+
+  // ====== 표지 문자열(에폭시 조건) ======
+  function buildCoverText() {
+    const base = (c_cover_base.value || "").trim();
+    const epoxyYes = (c_epoxy.value === "예");
+
+    if (!base) return epoxyYes ? "(에폭시)" : "";
+    return epoxyYes ? `${base} (에폭시)` : base;
+  }
+
+  // ====== 동기화(실시간 복사) ======
+  function syncToProposal() {
+    p_cost.value    = (c_est_cost.value || "").trim();
+    p_cover.value   = buildCoverText();
+    p_binding.value = c_binding.value;
+
+    const giftVal = (c_gift.value ?? "").toString().trim();
+    p_gift.value = giftVal ? `${giftVal}부` : "";
+  }
+
+  // ====== 이벤트 연결 ======
+  [c_est_cost, c_cover_base, c_epoxy, c_binding, c_gift].forEach(ctrl => {
+    ctrl.addEventListener("input", syncToProposal);
+    ctrl.addEventListener("change", syncToProposal);
+  });
+
+  // ====== 초기화 ======
+  el("btn_reset").addEventListener("click", () => {
+    c_est_cost.value   = "3,440,000원";
+    c_cover_base.value = "아트지 230g/컬러 4도/무광코팅";
+    c_epoxy.value      = "아니오";
+    c_binding.value    = "무선제본";
+    c_gift.value       = 40;
+    syncToProposal();
+  });
+
+  // 최초 1회 반영
+  syncToProposal();
+</script>
+</body>
+</html>
+
+
+
+</body>
+</html>
