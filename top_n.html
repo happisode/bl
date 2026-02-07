@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+
+<style id="webmakerstyle">
+
+</style>
+</head>
+<body>
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>적요 TOP N + 검색(클릭 시 즉시 표시)</title>
+<style>
+  body{
+    font-family: system-ui,-apple-system,BlinkMacSystemFont,
+                 "Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+    padding:24px
+  }
+  .field{max-width:560px;position:relative}
+  label{display:block;margin-bottom:6px;font-weight:600}
+  input{
+    width:100%;
+    padding:10px 12px;
+    border:1px solid #cfcfcf;
+    border-radius:8px;
+    font-size:14px;
+  }
+  .dropdown{
+    position:absolute;left:0;right:0;top:calc(100% + 6px);
+    background:#fff;
+    border:1px solid #ddd;
+    border-radius:10px;
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+    max-height:240px;
+    overflow:auto;
+    display:none;
+    z-index:100;
+  }
+  .item{
+    padding:9px 12px;
+    cursor:pointer;
+    display:flex;
+    justify-content:space-between;
+    gap:8px;
+    user-select:none;
+  }
+  .item:hover,.item.active{background:#f5f5f5}
+  .count{font-size:12px;color:#888;white-space:nowrap}
+  .empty{
+    padding:9px 12px;
+    color:#888;
+    cursor:default;
+  }
+  .hint{
+    font-size:12px;
+    color:#666;
+    margin-top:6px;
+    line-height:1.4;
+  }
+</style>
+</head>
+<body>
+
+<h3 style="margin:0 0 14px;">적요 입력 (최다 사용 TOP N + 검색)</h3>
+
+<div class="field" id="wrap">
+  <label for="summary">적요</label>
+  <input id="summary" placeholder="클릭하면 TOP N / 입력하면 검색" autocomplete="off">
+  <div id="dropdown" class="dropdown" role="listbox" aria-label="적요 후보"></div>
+  <div class="hint">
+    · 클릭/포커스 → TOP N 표시<br>
+    · 입력 → 즉시 필터<br>
+    · Enter → 선택 확정 / Esc → 닫기
+  </div>
+</div>
+
+<script>
+  // ✅ 서버에서 내려주는 "최다 사용 적요 TOP N"이라고 가정
+  const TOP_N = [
+    { text: "chatGPT 구독료", count: 128 },
+    { text: "네이버 키워드광고", count: 93 },
+    { text: "사무 비품", count: 72 },
+    { text: "프린터 토너 주문", count: 51 },
+    { text: "직원 오찬", count: 44 },
+    { text: "주유대", count: 41 },
+    { text: "AI 제미나이 구독료", count: 39 },
+    { text: "셔터스톡 구독료", count: 28 },
+    { text: "택배비", count: 25 },
+    { text: "도서/문구 구입", count: 22 }
+  ];
+
+  const input = document.getElementById("summary");
+  const dropdown = document.getElementById("dropdown");
+  const wrap = document.getElementById("wrap");
+
+  let filtered = [...TOP_N];
+  let active = -1;
+
+  function open(){
+    dropdown.style.display = "block";
+    render(); // ✅ 열 때마다 항상 렌더(첫 클릭 빈 목록 문제 해결)
+  }
+
+  function close(){
+    dropdown.style.display = "none";
+    active = -1;
+    // 닫힐 때는 굳이 render 안 해도 되지만, 상태 정리 목적이면 호출해도 OK
+  }
+
+  function render(){
+    if (dropdown.style.display !== "block") return;
+
+    if (!filtered.length){
+      dropdown.innerHTML =
+        `<div class="empty">일치하는 적요 없음 — 그대로 입력해도 됩니다</div>`;
+      return;
+    }
+
+    dropdown.innerHTML = filtered.map((v,i)=>`
+      <div class="item ${i===active ? "active" : ""}" data-i="${i}" role="option">
+        <span>${escapeHtml(v.text)}</span>
+        <span class="count">${Number(v.count).toLocaleString()}회</span>
+      </div>
+    `).join("");
+
+    [...dropdown.querySelectorAll(".item")].forEach(el=>{
+      const i = Number(el.dataset.i);
+      el.addEventListener("mousedown", (e)=>{
+        e.preventDefault(); // blur 방지(클릭 선택 안정화)
+        pick(i);
+      });
+    });
+  }
+
+  function filter(q){
+    const s = (q || "").trim().toLowerCase();
+    filtered = s
+      ? TOP_N.filter(v => v.text.toLowerCase().includes(s))
+      : [...TOP_N];
+    active = filtered.length ? 0 : -1;
+  }
+
+  function pick(i){
+    if (!filtered[i]) return;
+    input.value = filtered[i].text;
+    close();
+  }
+
+  function escapeHtml(str){
+    return String(str).replace(/[&<>"']/g,(c)=>({
+      "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"
+    }[c]));
+  }
+
+  // ✅ 클릭/포커스 시 TOP N 바로 표시
+  input.addEventListener("focus", ()=>{
+    filter(input.value); // 빈 값이면 TOP N 그대로
+    open();
+  });
+
+  // ✅ 입력 시 즉시 필터
+  input.addEventListener("input", ()=>{
+    filter(input.value);
+    open();
+  });
+
+  // ✅ 키보드 네비게이션
+  input.addEventListener("keydown", (e)=>{
+    if (dropdown.style.display !== "block"){
+      if (e.key === "ArrowDown" || e.key === "ArrowUp"){
+        filter(input.value);
+        open();
+        e.preventDefault();
+      }
+      return;
+    }
+
+    if (e.key === "Escape"){
+      close();
+      e.preventDefault();
+      return;
+    }
+
+    if (e.key === "ArrowDown"){
+      if (filtered.length) active = Math.min(active + 1, filtered.length - 1);
+      render();
+      e.preventDefault();
+      return;
+    }
+
+    if (e.key === "ArrowUp"){
+      if (filtered.length) active = Math.max(active - 1, 0);
+      render();
+      e.preventDefault();
+      return;
+    }
+
+    if (e.key === "Enter"){
+      if (active >= 0 && filtered.length) pick(active);
+      else close();
+      e.preventDefault();
+      return;
+    }
+  });
+
+  // ✅ 바깥 클릭 시 닫기
+  document.addEventListener("mousedown", (e)=>{
+    if (!e.target.closest("#wrap")) close();
+  });
+</script>
+
+</body>
+</html>
+
+
+
+</body>
+</html>
