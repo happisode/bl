@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+
+<style id="webmakerstyle">
+
+</style>
+</head>
+<body>
+<!-- 출간 후 모드: 700px 고정 / 1행 3버튼 + 하단 아카이브(기존 섹션 이동) -->
+<div class="bl-afterpub-wrap">
+
+  <!-- 상단: 출간 후 모드 -->
+  <div class="bl-panel" role="region" aria-label="출간 후 모드">
+    <div class="bl-panel-hd">
+      <span class="bl-dot" aria-hidden="true"></span>
+      <div class="bl-title">출간 후 모드</div>
+      <div class="bl-sub">출간 3개월 이후 이용 가능한 핵심 기능입니다.</div>
+    </div>
+
+    <div class="bl-actions" role="navigation" aria-label="출간 후 핵심 메뉴">
+      <a class="bl-btn" href="#" title="판매·인세 확인">
+        <span class="bl-ico" aria-hidden="true">📊</span>
+        <span class="bl-btn-txt">
+          <span class="bl-btn-label">판매·인세 확인</span>
+          <span class="bl-btn-desc">판매내역 / 예상 인세</span>
+        </span>
+      </a>
+
+      <a class="bl-btn" href="#" title="다음 책 출간 상담">
+        <span class="bl-ico" aria-hidden="true">📚</span>
+        <span class="bl-btn-txt">
+          <span class="bl-btn-label">다음 책 출간 상담</span>
+          <span class="bl-btn-desc">새 프로젝트 문의</span>
+        </span>
+      </a>
+
+      <a class="bl-btn bl-btn-warn" href="#" title="계약 해지 요청">
+        <span class="bl-ico" aria-hidden="true">🧾</span>
+        <span class="bl-btn-txt">
+          <span class="bl-btn-label">계약 해지 요청</span>
+          <span class="bl-btn-desc">절차 안내 후 접수</span>
+        </span>
+      </a>
+    </div>
+
+    <div class="bl-note">
+      <b>안내</b> 제작 관련 요청(원고 수정/추가 교정/홍보 요구 등)은 출간 완료 후 제한될 수 있습니다.
+    </div>
+  </div>
+
+  <!-- 하단: 아카이브(프로젝트 최신글 / ○○○의 프로젝트 이동) -->
+  <div class="bl-panel" role="region" aria-label="아카이브">
+    <div class="bl-panel-hd">
+      <span class="bl-dot" aria-hidden="true"></span>
+      <div class="bl-title">아카이브</div>
+      <div class="bl-sub">완료된 프로젝트의 기록(읽기 전용)입니다.</div>
+    </div>
+
+    <div class="bl-archive">
+      <div class="bl-arch-item">
+        <div class="bl-arch-left">
+          <div class="bl-arch-name">프로젝트 최신글</div>
+          <div class="bl-arch-desc">이전 글/파일 기록 열람(쓰기 불가)</div>
+        </div>
+        <a class="bl-arch-link" href="#" title="프로젝트 최신글 아카이브 보기">보기</a>
+      </div>
+
+      <div class="bl-arch-item">
+        <div class="bl-arch-left">
+          <div class="bl-arch-name">홍길동의 프로젝트</div>
+          <div class="bl-arch-desc">진행 단계/교정 기록 등 완료 프로젝트 보관</div>
+        </div>
+        <a class="bl-arch-link" href="#" title="홍길동의 프로젝트 아카이브 보기">보기</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<style>
+  :root{
+    --bl-red:#c8102e;
+    --bl-line:#d9d9d9;
+    --bl-soft:#f6f6f6;
+    --bl-text:#222;
+    --bl-sub:#666;
+  }
+
+  .bl-afterpub-wrap{
+    width:700px;
+    font-family:"Malgun Gothic","Apple SD Gothic Neo",system-ui,sans-serif;
+    color:var(--bl-text);
+  }
+
+  .bl-panel{
+    background:#fff;
+    border:1px solid var(--bl-line);
+    padding:12px 12px;
+    margin:0 0 10px 0;
+  }
+
+  .bl-panel-hd{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:10px;
+  }
+  .bl-dot{
+    width:10px; height:10px;
+    background:var(--bl-red);
+    border-radius:999px;
+    flex:0 0 10px;
+  }
+  .bl-title{
+    font-size:14px;
+    font-weight:800;
+    letter-spacing:-.2px;
+  }
+  .bl-sub{
+    margin-left:6px;
+    font-size:12px;
+    color:var(--bl-sub);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  /* 1행 3버튼 */
+  .bl-actions{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:10px;
+  }
+  .bl-btn{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    text-decoration:none;
+    color:var(--bl-text);
+    background:var(--bl-soft);
+    border:1px solid #e6e6e6;
+    padding:12px 12px;
+    min-height:60px;
+    transition: background .12s ease, border-color .12s ease, box-shadow .12s ease;
+  }
+  .bl-btn:hover{
+    background:#fff;
+    border-color:var(--bl-red);
+    box-shadow:0 4px 10px rgba(0,0,0,.06);
+  }
+  .bl-btn:focus{
+    outline:none;
+    box-shadow:0 0 0 3px rgba(200,16,46,.14);
+    border-color:var(--bl-red);
+    background:#fff;
+  }
+  .bl-ico{
+    width:36px; height:36px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(200,16,46,.08);
+    color:var(--bl-red);
+    font-size:18px;
+    flex:0 0 36px;
+  }
+  .bl-btn-txt{ display:flex; flex-direction:column; gap:3px; min-width:0; }
+  .bl-btn-label{
+    font-size:14px;
+    font-weight:800;
+    line-height:1.1;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .bl-btn-desc{
+    font-size:12px;
+    color:var(--bl-sub);
+    line-height:1.1;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+
+  /* 계약해지 요청: 과도하게 자극적이지 않게, 라인만 레드 */
+  .bl-btn-warn{
+    background:#fff;
+    border-color: rgba(200,16,46,.28);
+  }
+  .bl-btn-warn .bl-ico{
+    background: rgba(200,16,46,.05);
+  }
+
+  .bl-note{
+    margin-top:10px;
+    font-size:12px;
+    color:#333;
+    border:1px solid #eee;
+    background:#fff;
+    padding:10px;
+    line-height:1.45;
+  }
+
+  /* 아카이브 리스트 */
+  .bl-archive{
+    border-top:1px solid #eee;
+  }
+  .bl-arch-item{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:10px 0;
+    border-bottom:1px solid #eee;
+  }
+  .bl-arch-left{ min-width:0; }
+  .bl-arch-name{
+    font-size:13px;
+    font-weight:800;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .bl-arch-desc{
+    margin-top:3px;
+    font-size:12px;
+    color:var(--bl-sub);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .bl-arch-link{
+    flex:0 0 auto;
+    font-size:12px;
+    font-weight:800;
+    color:var(--bl-red);
+    text-decoration:none;
+    border:1px solid rgba(200,16,46,.28);
+    padding:6px 10px;
+    background:#fff;
+  }
+  .bl-arch-link:hover{
+    text-decoration:underline;
+  }
+
+  /* 반응형(혹시 폭이 줄어드는 페이지에 대비) */
+  @media (max-width: 740px){
+    .bl-afterpub-wrap{ width:100%; }
+    .bl-actions{ grid-template-columns: 1fr; }
+    .bl-sub{ display:none; }
+  }
+</style>
+
+
+
+</body>
+</html>
