@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>즐겨찾기 Drag & Drop 데모 (SortableJS CDN)</title>
+  <style>
+    body{font-family: "Malgun Gothic","Apple SD Gothic Neo","Noto Sans KR",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; margin:24px; background:#fff;}
+    .wrap{width:420px; border:1px solid #e5e7eb; border-radius:10px; padding:14px;}
+    .title{font-size:14px; font-weight:700; margin:0 0 10px 0; color:#111827;}
+    ul#favoriteList{list-style:none; padding:0; margin:0;}
+    .fav-item{
+      display:flex; align-items:center; gap:8px;
+      padding:8px 10px; border-radius:8px;
+      border:1px solid transparent;
+      user-select:none;
+    }
+    .fav-item:hover{background:#f9fafb; border-color:#eef2f7;}
+    .drag-handle{
+      width:18px; text-align:center; color:#9ca3af; cursor:grab;
+      font-weight:700;
+    }
+    .fav-label{flex:1; font-size:13px; color:#111827;}
+    .meta{display:flex; align-items:center; gap:6px;}
+    .lock{font-size:12px; color:#9ca3af;}
+    .badge{
+      display:inline-flex; align-items:center; justify-content:center;
+      min-width:16px; height:16px; padding:0 5px;
+      font-size:11px; font-weight:700; color:#fff; background:#ef4444;
+      border-radius:999px;
+    }
+    .arrow{font-size:12px; color:#9ca3af;}
+    .drag-ghost{opacity:.35;}
+    .drag-chosen{background:#eef2ff !important; border-color:#c7d2fe !important;}
+    .out{margin-top:12px; font-size:12px; color:#374151;}
+    pre{white-space:pre-wrap; word-break:break-all; background:#0b1020; color:#e5e7eb; padding:10px; border-radius:10px; margin:6px 0 0;}
+    .hint{font-size:12px; color:#6b7280; margin:6px 0 0;}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <p class="title">즐겨찾기 (드래그로 순서 변경)</p>
+
+    <ul id="favoriteList" aria-label="즐겨찾기 목록">
+      <li class="fav-item" data-id="101">
+        <span class="drag-handle" title="드래그">☰</span>
+        <span class="fav-label">컴퓨터 관리 대장</span>
+        <span class="meta"><span class="arrow">↕</span></span>
+      </li>
+
+      <li class="fav-item" data-id="102">
+        <span class="drag-handle" title="드래그">☰</span>
+        <span class="fav-label">사이트 불편 신고</span>
+        <span class="meta"><span class="arrow">↕</span></span>
+      </li>
+
+      <li class="fav-item" data-id="103">
+        <span class="drag-handle" title="드래그">☰</span>
+        <span class="fav-label">ICON 시스템 개발</span>
+        <span class="meta"><span class="lock" title="권한 제한">🔒</span><span class="arrow">↕</span></span>
+      </li>
+
+      <li class="fav-item" data-id="104">
+        <span class="drag-handle" title="드래그">☰</span>
+        <span class="fav-label">ICON 별점작문</span>
+        <span class="meta"><span class="lock" title="권한 제한">🔒</span><span class="arrow">↕</span></span>
+      </li>
+
+      <li class="fav-item" data-id="105">
+        <span class="drag-handle" title="드래그">☰</span>
+        <span class="fav-label">표지글 검토신청</span>
+        <span class="meta"><span class="lock" title="권한 제한">🔒</span><span class="arrow">↕</span></span>
+      </li>
+
+      <li class="fav-item" data-id="106">
+        <span class="drag-handle" title="드래그">☰</span>
+        <span class="fav-label">출판계약서 관리</span>
+        <span class="meta"><span class="lock" title="권한 제한">🔒</span><span class="arrow">↕</span></span>
+      </li>
+
+      <li class="fav-item" data-id="107">
+        <span class="drag-handle" title="드래그">☰</span>
+        <span class="fav-label">출판제안서 관리</span>
+        <span class="meta"><span class="lock" title="권한 제한">🔒</span><span class="arrow">↕</span></span>
+      </li>
+
+      <li class="fav-item" data-id="108">
+        <span class="drag-handle" title="드래그">☰</span>
+        <span class="fav-label">자동납품관리</span>
+        <span class="meta"><span class="badge" title="미처리">1</span><span class="arrow">↕</span></span>
+      </li>
+
+      <li class="fav-item" data-id="109">
+        <span class="drag-handle" title="드래그">☰</span>
+        <span class="fav-label">상담카드관리</span>
+        <span class="meta"><span class="arrow">↕</span></span>
+      </li>
+
+      <li class="fav-item" data-id="110">
+        <span class="drag-handle" title="드래그">☰</span>
+        <span class="fav-label">부서별 목표관리</span>
+        <span class="meta"><span class="arrow">↕</span></span>
+      </li>
+
+      <li class="fav-item" data-id="111">
+        <span class="drag-handle" title="드래그">☰</span>
+        <span class="fav-label">프로젝트 최신글</span>
+        <span class="meta"><span class="arrow">↕</span></span>
+      </li>
+
+      <li class="fav-item" data-id="112">
+        <span class="drag-handle" title="드래그">☰</span>
+        <span class="fav-label">지출결의서</span>
+        <span class="meta"><span class="lock" title="권한 제한">🔒</span><span class="arrow">↕</span></span>
+      </li>
+    </ul>
+
+    <p class="hint">※ 왼쪽 ☰ 핸들을 잡고 드래그하면 정렬됩니다. (SortableJS를 CDN으로 로드)</p>
+
+    <div class="out">
+      현재 순서(IDs):
+      <pre id="orderOut">[]</pre>
+    </div>
+  </div>
+
+  <!-- SortableJS (CDN) -->
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+  <script>
+    const list = document.getElementById('favoriteList');
+    const out = document.getElementById('orderOut');
+
+    function renderOrder(){
+      const order = Array.from(list.querySelectorAll('.fav-item')).map(li => Number(li.dataset.id));
+      out.textContent = JSON.stringify(order);
+    }
+
+    new Sortable(list, {
+      animation: 150,
+      handle: '.drag-handle',
+      ghostClass: 'drag-ghost',
+      chosenClass: 'drag-chosen',
+      onEnd: renderOrder
+    });
+
+    renderOrder();
+  </script>
+</body>
+</html>
