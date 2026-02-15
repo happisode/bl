@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+
+<style id="webmakerstyle">
+
+</style>
+</head>
+<body>
+<!-- 출간 후 모드(저자 마이페이지) 제안 UI
+- 기존 톤(회색 라인 + 레드 포인트 + 섹션 타이틀) 유지
+- '문의하기' 대신 '신청/확인/안내' 중심
+- 불필요 요청을 줄이기 위해: ①FAQ 우선 ②신청서 형태 ③동의 체크
+-->
+
+<div class="bl-postpub">
+
+  <!-- 상단 안내(출간 후 모드 배너) -->
+  <div class="bl-banner" role="region" aria-label="출간 후 안내">
+    <div class="bl-banner-left">
+      <div class="bl-badge">출간 후 모드</div>
+      <div class="bl-banner-title">출간이 완료되어, 제작 단계는 종료되었습니다.</div>
+      <div class="bl-banner-desc">
+        출간 후 요청은 아래 항목으로만 접수됩니다. (동일/반복 요청은 답변이 제한될 수 있습니다)
+      </div>
+    </div>
+    <div class="bl-banner-right">
+      <a href="#" class="bl-link">출간 후 이용 가이드</a>
+    </div>
+  </div>
+
+  <!-- 핵심 바로가기(5개) -->
+  <div class="bl-card">
+    <div class="bl-card-hd">
+      <span class="bl-dot"></span>
+      <strong class="bl-card-title">출간 후 빠른 메뉴</strong>
+      <span class="bl-card-sub">가장 많이 찾는 기능만 모았습니다.</span>
+    </div>
+
+    <div class="bl-grid5" role="navigation" aria-label="출간 후 빠른 메뉴">
+      <a class="bl-action" href="#" title="오탈자 수정 신청">
+        <span class="bl-ico" aria-hidden="true">🧾</span>
+        <span class="bl-txt">
+          <span class="bl-lbl">오탈자 수정 신청</span>
+          <span class="bl-desc">명백한 오탈자만</span>
+        </span>
+      </a>
+
+      <a class="bl-action" href="#" title="추가 수정(유료) 안내">
+        <span class="bl-ico" aria-hidden="true">✂️</span>
+        <span class="bl-txt">
+          <span class="bl-lbl">추가 수정 안내</span>
+          <span class="bl-desc">내용 변경/문장 수정</span>
+        </span>
+      </a>
+
+      <a class="bl-action" href="#" title="홍보 안내 보기">
+        <span class="bl-ico" aria-hidden="true">📣</span>
+        <span class="bl-txt">
+          <span class="bl-lbl">홍보 안내 보기</span>
+          <span class="bl-desc">기본/추가 옵션</span>
+        </span>
+      </a>
+
+      <a class="bl-action" href="#" title="판매/정산 확인">
+        <span class="bl-ico" aria-hidden="true">📊</span>
+        <span class="bl-txt">
+          <span class="bl-lbl">판매·정산 확인</span>
+          <span class="bl-desc">반영 지연 안내 포함</span>
+        </span>
+      </a>
+
+      <a class="bl-action bl-action-outline" href="#" title="자주 묻는 질문">
+        <span class="bl-ico" aria-hidden="true">❓</span>
+        <span class="bl-txt">
+          <span class="bl-lbl">자주 묻는 질문</span>
+          <span class="bl-desc">먼저 확인해 주세요</span>
+        </span>
+      </a>
+    </div>
+  </div>
+
+  <!-- 3대 요청(출간 후) : '게시판 글쓰기' 대신 '선택형' -->
+  <div class="bl-columns">
+
+    <!-- (1) 수정 요청: 신청서(최우선) -->
+    <div class="bl-card bl-col">
+      <div class="bl-card-hd">
+        <span class="bl-dot"></span>
+        <strong class="bl-card-title">오탈자 수정 신청</strong>
+        <a class="bl-more" href="#">자세히</a>
+      </div>
+
+      <div class="bl-note">
+        <strong>중요</strong> 출간 후 수정은 <b>명백한 오탈자</b>만 접수됩니다.
+        내용 변경/문장 다듬기는 <b>유료 재편집</b> 범위입니다.
+      </div>
+
+      <form class="bl-form" action="#" method="post">
+        <label class="bl-field">
+          <span class="bl-field-label">수정 종류</span>
+          <select class="bl-input">
+            <option>명백한 오탈자(권장)</option>
+            <option>내용 변경(유료 안내로 이동)</option>
+            <option>문장 개선(유료 안내로 이동)</option>
+          </select>
+        </label>
+
+        <label class="bl-field">
+          <span class="bl-field-label">페이지/위치</span>
+          <input class="bl-input" type="text" placeholder="예) 52쪽 3번째 줄" />
+        </label>
+
+        <label class="bl-field">
+          <span class="bl-field-label">수정 전/후</span>
+          <textarea class="bl-input bl-textarea" placeholder="예) 수정 전: 2025년 2월 / 수정 후: 2026년 2월"></textarea>
+        </label>
+
+        <label class="bl-check">
+          <input type="checkbox" />
+          <span>동일/반복 요청은 답변이 제한될 수 있음을 확인했습니다.</span>
+        </label>
+
+        <div class="bl-btn-row">
+          <button type="submit" class="bl-btn">신청 접수</button>
+          <a href="#" class="bl-btn bl-btn-ghost">내 신청 내역</a>
+        </div>
+
+        <div class="bl-minihelp">
+          * 출간 후 수정 반영은 차기 인쇄(쇄) 시점에 적용됩니다.
+        </div>
+      </form>
+    </div>
+
+    <!-- (2) 홍보/마케팅: "요청" 대신 "안내/옵션" -->
+    <div class="bl-card bl-col">
+      <div class="bl-card-hd">
+        <span class="bl-dot"></span>
+        <strong class="bl-card-title">홍보 안내</strong>
+        <a class="bl-more" href="#">더보기</a>
+      </div>
+
+      <div class="bl-list">
+        <div class="bl-row">
+          <div class="bl-row-title">기본 홍보 범위</div>
+          <div class="bl-row-desc">출간 시 기본 제공되는 홍보 항목을 확인합니다.</div>
+          <a class="bl-row-link" href="#">확인</a>
+        </div>
+
+        <div class="bl-row">
+          <div class="bl-row-title">추가 홍보 옵션</div>
+          <div class="bl-row-desc">선택형(유료) 홍보 옵션 및 비용을 확인합니다.</div>
+          <a class="bl-row-link" href="#">보기</a>
+        </div>
+
+        <div class="bl-row">
+          <div class="bl-row-title">홍보 자료 제출</div>
+          <div class="bl-row-desc">보도자료/이미지/문구 등 자료를 업로드합니다.</div>
+          <a class="bl-row-link" href="#">업로드</a>
+        </div>
+      </div>
+
+      <div class="bl-note bl-note-soft">
+        홍보 문의 전, <b>기본 홍보 범위</b>를 먼저 확인해 주세요.
+      </div>
+    </div>
+
+    <!-- (3) 판매/정산: ‘왜 안 잡히냐’ 문의 방지 문구 상시 노출 -->
+    <div class="bl-card bl-col">
+      <div class="bl-card-hd">
+        <span class="bl-dot"></span>
+        <strong class="bl-card-title">판매·정산</strong>
+        <a class="bl-more" href="#">더보기</a>
+      </div>
+
+      <div class="bl-kpi">
+        <div class="bl-kpi-item">
+          <div class="bl-kpi-label">최근 반영일</div>
+          <div class="bl-kpi-val">2026-02-15</div>
+        </div>
+        <div class="bl-kpi-item">
+          <div class="bl-kpi-label">최근 4건</div>
+          <div class="bl-kpi-val">표시</div>
+        </div>
+      </div>
+
+      <div class="bl-note bl-note-warn">
+        서점 판매는 정산 반영까지 <b>2~4주</b> 지연될 수 있습니다.
+      </div>
+
+      <div class="bl-mini-table">
+        <div class="bl-th">
+          <span>날짜</span><span>구분</span><span>수량</span>
+        </div>
+        <div class="bl-td">
+          <span>2025-11-20</span><span>서점</span><span>1</span>
+        </div>
+        <div class="bl-td">
+          <span>2025-11-19</span><span>서점</span><span>1</span>
+        </div>
+        <div class="bl-td">
+          <span>2025-05-07</span><span>서점</span><span>1</span>
+        </div>
+        <div class="bl-td">
+          <span>2025-04-30</span><span>서점</span><span>1</span>
+        </div>
+      </div>
+
+      <div class="bl-btn-row">
+        <a href="#" class="bl-btn bl-btn-ghost">판매 상세 보기</a>
+        <a href="#" class="bl-btn bl-btn-ghost">정산 안내</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 하단: 기존 “프로젝트 최신글/새소식”은 유지하되, 출간 후엔 우선순위 낮춤 -->
+  <div class="bl-card">
+    <div class="bl-card-hd">
+      <span class="bl-dot"></span>
+      <strong class="bl-card-title">공지 및 안내</strong>
+      <a class="bl-more" href="#">더보기</a>
+    </div>
+
+    <ul class="bl-bullets">
+      <li>출간 후 수정은 ‘오탈자 수정 신청’에서만 접수됩니다.</li>
+      <li>홍보 요청 전, ‘홍보 안내’에서 기본 범위를 확인해 주세요.</li>
+      <li>서점 판매 반영은 최대 4주 지연될 수 있습니다.</li>
+    </ul>
+  </div>
+
+</div>
+
+<style>
+  /* 기존 MY북랩의 회색 라인 + 레드 도트 톤을 최대한 맞춘 스타일 */
+  .bl-postpub{
+    font-family: "Malgun Gothic","Apple SD Gothic Neo",system-ui,sans-serif;
+    color:#222;
+    max-width: 740px; /* 기존 콘텐츠 폭 느낌 */
+  }
+
+  :root{
+    --bl-red:#c8102e;
+    --bl-line:#d9d9d9;
+    --bl-soft:#f6f6f6;
+    --bl-text:#222;
+    --bl-sub:#666;
+  }
+
+  /* 상단 배너 */
+  .bl-banner{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:12px;
+    background: #fff;
+    border:1px solid var(--bl-line);
+    padding:14px 14px;
+    margin: 0 0 10px 0;
+  }
+  .bl-badge{
+    display:inline-block;
+    font-size:12px;
+    font-weight:800;
+    color:#fff;
+    background:var(--bl-red);
+    padding:3px 8px;
+    border-radius:999px;
+    margin-bottom:8px;
+  }
+  .bl-banner-title{ font-size:16px; font-weight:800; margin-bottom:4px; }
+  .bl-banner-desc{ font-size:12px; color:var(--bl-sub); line-height:1.4; }
+  .bl-link{ font-size:12px; color:var(--bl-red); text-decoration:none; font-weight:700; }
+  .bl-link:hover{ text-decoration:underline; }
+
+  /* 카드 공통 */
+  .bl-card{
+    background:#fff;
+    border:1px solid var(--bl-line);
+    margin: 0 0 10px 0;
+    padding: 12px 12px;
+  }
+  .bl-card-hd{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:10px;
+  }
+  .bl-dot{
+    width:10px; height:10px;
+    background:var(--bl-red);
+    border-radius:999px;
+    display:inline-block;
+    flex:0 0 10px;
+  }
+  .bl-card-title{ font-size:14px; }
+  .bl-card-sub{ font-size:12px; color:var(--bl-sub); margin-left:6px; }
+  .bl-more{
+    margin-left:auto;
+    font-size:12px;
+    color:var(--bl-red);
+    text-decoration:none;
+    font-weight:700;
+  }
+  .bl-more:hover{ text-decoration:underline; }
+
+  /* 빠른 메뉴(5개) */
+  .bl-grid5{
+    display:grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap:8px;
+  }
+  .bl-action{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:10px 10px;
+    background: var(--bl-soft);
+    border:1px solid #e6e6e6;
+    text-decoration:none;
+    color:var(--bl-text);
+    min-height:54px;
+  }
+  .bl-action:hover{
+    background:#fff;
+    border-color: var(--bl-red);
+  }
+  .bl-action-outline{
+    background:#fff;
+    border-color:#e6e6e6;
+  }
+  .bl-ico{
+    width:34px; height:34px;
+    display:flex; align-items:center; justify-content:center;
+    background: rgba(200,16,46,.08);
+    color:var(--bl-red);
+    font-size:16px;
+    flex:0 0 34px;
+  }
+  .bl-txt{ display:flex; flex-direction:column; gap:2px; min-width:0; }
+  .bl-lbl{ font-size:13px; font-weight:800; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .bl-desc{ font-size:11px; color:var(--bl-sub); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+  /* 3열 영역 */
+  .bl-columns{
+    display:grid;
+    grid-template-columns: 1fr;
+    gap:10px;
+  }
+  @media (min-width: 740px){
+    .bl-columns{ grid-template-columns: 1.2fr 1fr 1fr; }
+  }
+
+  /* 노트 */
+  .bl-note{
+    font-size:12px;
+    color:#333;
+    background:#fff;
+    border:1px solid #eee;
+    padding:10px;
+    line-height:1.45;
+    margin-bottom:10px;
+  }
+  .bl-note strong{ color:var(--bl-red); }
+  .bl-note-soft{ background:#fafafa; }
+  .bl-note-warn{
+    border-color: rgba(200,16,46,.22);
+    background: rgba(200,16,46,.05);
+  }
+
+  /* 폼 */
+  .bl-form{ margin-top:4px; }
+  .bl-field{ display:block; margin-bottom:8px; }
+  .bl-field-label{ display:block; font-size:12px; color:var(--bl-sub); margin-bottom:4px; }
+  .bl-input{
+    width:100%;
+    border:1px solid #dcdcdc;
+    padding:8px 9px;
+    font-size:13px;
+    background:#fff;
+    box-sizing:border-box;
+  }
+  .bl-input:focus{
+    outline:none;
+    border-color: var(--bl-red);
+    box-shadow: 0 0 0 3px rgba(200,16,46,.12);
+  }
+  .bl-textarea{ height:78px; resize:vertical; }
+  .bl-check{
+    display:flex;
+    gap:8px;
+    align-items:flex-start;
+    font-size:12px;
+    color:#444;
+    margin: 8px 0 10px;
+  }
+
+  /* 버튼 */
+  .bl-btn-row{ display:flex; gap:8px; flex-wrap:wrap; }
+  .bl-btn{
+    display:inline-block;
+    background: var(--bl-red);
+    color:#fff;
+    text-decoration:none;
+    border:1px solid var(--bl-red);
+    padding:8px 10px;
+    font-size:12px;
+    font-weight:800;
+    cursor:pointer;
+  }
+  .bl-btn:hover{ filter: brightness(0.98); }
+  .bl-btn-ghost{
+    background:#fff;
+    color:var(--bl-red);
+    border-color: rgba(200,16,46,.35);
+  }
+
+  .bl-minihelp{ font-size:11px; color:var(--bl-sub); margin-top:8px; }
+
+  /* 홍보 리스트 */
+  .bl-list{ border-top:1px solid #eee; }
+  .bl-row{
+    display:grid;
+    grid-template-columns: 1fr;
+    gap:4px;
+    padding:10px 0;
+    border-bottom:1px solid #eee;
+  }
+  .bl-row-title{ font-size:13px; font-weight:800; }
+  .bl-row-desc{ font-size:12px; color:var(--bl-sub); line-height:1.35; }
+  .bl-row-link{
+    justify-self:start;
+    font-size:12px;
+    color:var(--bl-red);
+    text-decoration:none;
+    font-weight:800;
+  }
+  .bl-row-link:hover{ text-decoration:underline; }
+
+  /* 판매 미니 테이블 */
+  .bl-kpi{
+    display:flex; gap:10px; margin-bottom:8px;
+  }
+  .bl-kpi-item{
+    flex:1;
+    background:#fafafa;
+    border:1px solid #eee;
+    padding:8px;
+  }
+  .bl-kpi-label{ font-size:11px; color:var(--bl-sub); margin-bottom:4px; }
+  .bl-kpi-val{ font-size:13px; font-weight:800; }
+
+  .bl-mini-table{ border:1px solid #eee; }
+  .bl-th, .bl-td{
+    display:grid;
+    grid-template-columns: 1.2fr 1fr .6fr;
+    gap:8px;
+    padding:8px 10px;
+    font-size:12px;
+  }
+  .bl-th{
+    background:#f3f3f3;
+    font-weight:800;
+    border-bottom:1px solid #eee;
+  }
+  .bl-td{ border-bottom:1px solid #eee; }
+  .bl-td:last-child{ border-bottom:none; }
+
+  /* 공지 bullets */
+  .bl-bullets{
+    margin:0;
+    padding-left:18px;
+    color:#333;
+    font-size:12px;
+    line-height:1.6;
+  }
+
+  /* 반응형: 5버튼은 폭 좁으면 자동 줄바꿈 */
+  @media (max-width: 739px){
+    .bl-grid5{ grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+
+
+
+</body>
+</html>
