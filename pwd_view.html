@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+
+<style id="webmakerstyle">
+
+</style>
+</head>
+<body>
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>업무용 사이트 목록 - 비밀번호 안전 조회 데모</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 24px; }
+    h1 { font-size: 18px; margin: 0 0 12px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #e5e7eb; padding: 10px; vertical-align: middle; }
+    th { background: #f9fafb; text-align: left; font-weight: 600; }
+    .pwd-wrap { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .pwd-box {
+      min-width: 140px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 10px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      background: #fff;
+    }
+    .pwd-text { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+    .btn {
+      border: 1px solid #d1d5db;
+      background: #fff;
+      padding: 6px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    .btn:disabled { cursor: not-allowed; opacity: 0.6; }
+    .btn.primary { border-color: #93c5fd; }
+    .hint { color: #6b7280; font-size: 12px; }
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 16px;
+      transform: translateX(-50%);
+      background: rgba(17,24,39,0.95);
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      display: none;
+      max-width: 92vw;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .tag {
+      display:inline-block; font-size:12px; padding:2px 8px; border-radius:999px;
+      background:#f3f4f6; color:#374151; border:1px solid #e5e7eb;
+    }
+  </style>
+</head>
+<body>
+  <h1>업무용 사이트 목록 <span class="tag">비번은 기본 숨김</span></h1>
+  <p class="hint">
+    - “보기”를 누르면 비밀번호를 <b>3초만</b> 표시하고 자동으로 다시 숨깁니다. <br/>
+    - “복사”는 평문을 화면에 오래 노출하지 않으면서 클립보드에 복사합니다. <br/>
+    - 실제 서비스에서는 API 응답 전에 권한/사내IP/로그를 서버에서 처리하세요.
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width:60px;">No</th>
+        <th>기관명</th>
+        <th style="width:280px;">ID</th>
+        <th style="width:360px;">PWD</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr data-site-id="28">
+        <td>28</td>
+        <td>랭크업(문자출간) - 세금계산서 발행신청</td>
+        <td class="mono">itessay</td>
+        <td>
+          <div class="pwd-wrap">
+            <div class="pwd-box">
+              <span class="pwd-text" data-pwd-text>••••••••</span>
+              <span class="hint" data-timer></span>
+            </div>
+            <button class="btn primary" data-action="reveal">보기</button>
+            <button class="btn" data-action="copy">복사</button>
+          </div>
+          <div class="hint">※ 포커스가 다른 곳으로 이동하면 즉시 숨김 처리(선택 정책)</div>
+        </td>
+      </tr>
+
+      <tr data-site-id="27">
+        <td>27</td>
+        <td>국립장애인도서관</td>
+        <td class="mono">essaybook</td>
+        <td>
+          <div class="pwd-wrap">
+            <div class="pwd-box">
+              <span class="pwd-text" data-pwd-text>••••••••</span>
+              <span class="hint" data-timer></span>
+            </div>
+            <button class="btn primary" data-action="reveal">보기</button>
+            <button class="btn" data-action="copy">복사</button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    /**
+     * ✅ 실제 서비스에서는 여기 대신 서버 API를 호출하세요.
+     * 예) fetch(`/api/password/view?id=${siteId}`, { credentials: 'include' })
+     *     -> { "password": "plain_password" }
+     *
+     * 서버 측 필수:
+     * - 로그인/권한 체크
+     * - 사내IP 제한(옵션)
+     * - 조회 로그 저장 (PASSWORD_VIEW)
+     * - 암호화 컬럼 복호화 후 응답
+     */
+    async function mockFetchPassword(siteId) {
+      await new Promise(r => setTimeout(r, 250)); // 네트워크 흉내
+      const map = {
+        "28": "@1300bk!",
+        "27": "@2********"
+      };
+      return map[String(siteId)] ?? "N/A";
+    }
+
+    const REVEAL_MS = 3000;
+    const rowState = new WeakMap(); // row element -> { maskedText, revealTimer, hideAt }
+
+    function toast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.style.display = 'block';
+      clearTimeout(el._t);
+      el._t = setTimeout(() => el.style.display = 'none', 1800);
+    }
+
+    function getState(row) {
+      if (!rowState.has(row)) rowState.set(row, { revealTimer: null, hideAt: 0 });
+      return rowState.get(row);
+    }
+
+    function maskRow(row) {
+      const state = getState(row);
+      const pwdText = row.querySelector('[data-pwd-text]');
+      const timerEl = row.querySelector('[data-timer]');
+      pwdText.textContent = '••••••••';
+      if (timerEl) timerEl.textContent = '';
+      if (state.revealTimer) {
+        clearInterval(state.revealTimer);
+        state.revealTimer = null;
+      }
+      state.hideAt = 0;
+    }
+
+    function startCountdown(row, hideAt) {
+      const state = getState(row);
+      const timerEl = row.querySelector('[data-timer]');
+      if (!timerEl) return;
+
+      if (state.revealTimer) clearInterval(state.revealTimer);
+      state.revealTimer = setInterval(() => {
+        const left = Math.max(0, hideAt - Date.now());
+        timerEl.textContent = left ? `${Math.ceil(left / 1000)}초` : '';
+        if (left <= 0) {
+          clearInterval(state.revealTimer);
+          state.revealTimer = null;
+        }
+      }, 200);
+    }
+
+    async function revealRow(row, btn) {
+      const siteId = row.getAttribute('data-site-id');
+      const pwdText = row.querySelector('[data-pwd-text]');
+      const state = getState(row);
+
+      btn.disabled = true;
+      btn.textContent = '불러오는 중...';
+
+      try {
+        // ✅ 실제 서비스에서는 mockFetchPassword 대신 API 호출
+        const password = await mockFetchPassword(siteId);
+
+        pwdText.textContent = password;
+        toast('비밀번호를 잠시 표시합니다.');
+
+        const hideAt = Date.now() + REVEAL_MS;
+        state.hideAt = hideAt;
+        startCountdown(row, hideAt);
+
+        // 3초 후 자동 숨김
+        setTimeout(() => {
+          // 그 사이 다시 보기 눌러 hideAt이 갱신되었으면 무시
+          if (state.hideAt === hideAt) maskRow(row);
+        }, REVEAL_MS);
+
+      } catch (e) {
+        toast('비밀번호 조회에 실패했습니다.');
+        maskRow(row);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '보기';
+      }
+    }
+
+    async function copyRow(row, btn) {
+      const siteId = row.getAttribute('data-site-id');
+
+      btn.disabled = true;
+      const old = btn.textContent;
+      btn.textContent = '복사 중...';
+
+      try {
+        // ✅ 실제 서비스에서는 여기서도 서버 API로 평문을 받아오되,
+        // 화면 표시 없이 clipboard로만 사용 (로그는 남김)
+        const password = await mockFetchPassword(siteId);
+
+        await navigator.clipboard.writeText(password);
+        toast('비밀번호가 클립보드에 복사되었습니다.');
+      } catch (e) {
+        toast('복사에 실패했습니다. (브라우저 권한 확인)');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = old;
+      }
+    }
+
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-action]');
+      if (!btn) return;
+
+      const row = btn.closest('tr[data-site-id]');
+      if (!row) return;
+
+      const action = btn.getAttribute('data-action');
+      if (action === 'reveal') revealRow(row, btn);
+      if (action === 'copy') copyRow(row, btn);
+    });
+
+    // ✅ 선택 정책: 화면 포커스가 빠지면 즉시 숨김 (스크린샷/방치 리스크 감소)
+    window.addEventListener('blur', () => {
+      document.querySelectorAll('tr[data-site-id]').forEach(maskRow);
+    });
+  </script>
+</body>
+</html>
+
+
+</body>
+</html>
