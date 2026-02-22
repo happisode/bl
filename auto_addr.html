@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+
+<style id="webmakerstyle">
+
+</style>
+</head>
+<body>
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>주소 자동 식별 + 주소 복사(권한/Fallback 대응)</title>
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", sans-serif; line-height: 1.65; padding: 24px; }
+    .wrap { max-width: 860px; margin: 0 auto; }
+    h2 { margin: 0 0 14px; }
+    .post { border: 1px solid #ddd; border-radius: 12px; padding: 18px; background: #fff; }
+    .post p { margin: 0 0 10px; }
+
+    /* 주소가 있는 줄(문단)을 버튼과 함께 한 줄 레이아웃으로 */
+    .line {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      margin: 0 0 10px;
+    }
+    .line .text {
+      flex: 1;
+      white-space: pre-wrap;
+    }
+
+    .btn-copy {
+      padding: 6px 10px;
+      font-size: 12px;
+      border: 1px solid #bbb;
+      border-radius: 10px;
+      background: #fff;
+      cursor: pointer;
+      flex: none;
+      user-select: none;
+    }
+    .btn-copy:active { transform: translateY(1px); }
+
+    .badge {
+      display: inline-block;
+      margin-left: 6px;
+      padding: 2px 7px;
+      font-size: 11px;
+      border-radius: 999px;
+      border: 1px solid #8a63ff;
+      color: #4a2fbf;
+      vertical-align: middle;
+    }
+    .address-highlight {
+      background: #fff3cd;
+      padding: 0 2px;
+      border-radius: 4px;
+    }
+
+    .hint { color: #666; margin-top: 12px; font-size: 13px; }
+    .env { margin: 10px 0 14px; font-size: 13px; color: #444; }
+    .env code { background: #f6f6f6; padding: 2px 6px; border-radius: 6px; }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <h2>주소 자동 식별 + “주소 복사” 버튼 (권한/확장/HTTP 대비)</h2>
+    <div class="env">
+      현재 실행 환경: <code id="env"></code>
+    </div>
+
+    <div class="post" id="post">
+      <!-- ✅ 샘플 텍스트 -->
+      <p>안녕하세요.</p>
+      <p>홍길동입니다.</p>
+      <p>주신 제안에 대해 의견 드리겠습니다.</p>
+
+      <p>책 보내실 주소는 서울 성북구 성북로4길 52 200-1234입니다.</p>
+
+      <p>증정본 받을 주소만 수정합니다.</p>
+      <p>주소 수정 : 서울특별시 마포구 연남로 13길 39, B02호 (03973)</p>
+
+      <p>감사합니다.</p>
+      <p>홍길동 올림</p>
+    </div>
+
+    <div class="hint">
+      • 주소가 포함된 문단(줄)에만 “주소 복사” 버튼이 자동 생성됩니다.<br/>
+      • 복사는 1) Clipboard API → 2) execCommand fallback 순으로 시도합니다.
+    </div>
+  </div>
+
+  <script>
+    // 실행 환경 표시
+    document.getElementById("env").textContent =
+      (location.protocol || "") + "//" + (location.host || "(no-host)");
+
+    /**
+     * ✅ 클립보드 복사: 최신 API 우선 + 실패 시 fallback
+     * - navigator.clipboard.writeText: 권한/secure context 필요
+     * - execCommand('copy'): 확장/웹뷰/HTTP에서도 통하는 경우가 많음
+     */
+    async function copyTextSafe(text) {
+      // 1) 최신 Clipboard API
+      if (navigator.clipboard && window.isSecureContext) {
+        try {
+          await navigator.clipboard.writeText(text);
+          return true;
+        } catch (e) {
+          // fallback으로 진행
+        }
+      }
+
+      // 2) Fallback: textarea + execCommand
+      try {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.setAttribute("readonly", "");
+        ta.style.position = "fixed";
+        ta.style.left = "-9999px";
+        ta.style.top = "0";
+        document.body.appendChild(ta);
+
+        ta.focus();
+        ta.select();
+        ta.setSelectionRange(0, ta.value.length);
+
+        const ok = document.execCommand("copy");
+        document.body.removeChild(ta);
+        return ok;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    // ✅ 주소 탐지(도로명 + 숫자) 1차 정규식 (base만 잡고 뒤는 확장 함수에서 붙임)
+    const addressRegex =
+      /(서울|부산|대구|인천|광주|대전|울산|세종|경기|강원|충북|충남|전북|전남|경북|경남|제주)[^\n,]*?(로|길|대로)\s?\d+(-\d+)?/;
+
+    // ✅ 주소 뒤에 붙는 상세(호수/동/층/우편번호 등) 보강용
+    // - 예: 204-1508, 101동 1203호, 2층, B02호, (03973)
+    const tailRegex =
+      /(\s*\d{1,4}[-]\d{1,4}|\s*\d{1,4}동\s*\d{1,4}호|\s*\d{1,3}층|\s*[A-Za-z]?\d{1,4}호|\s*\(\s*\d{5}\s*\))/g;
+
+    function enhanceAddressFromParagraph(pText, baseAddress) {
+      const idx = pText.indexOf(baseAddress);
+      if (idx < 0) return baseAddress;
+
+      const after = pText.slice(idx + baseAddress.length);
+
+      // ✅ 우편번호(5자리)가 있으면, 그 지점까지를 통째로 주소로 확장
+      const zip = after.match(/\(\s*\d{5}\s*\)/);
+      if (zip) {
+        const end = after.indexOf(zip[0]) + zip[0].length;
+        return (baseAddress + after.slice(0, end))
+          .replace(/\s+/g, " ")
+          .replace(/\s+,/g, ",")
+          .trim();
+      }
+
+      // ✅ 우편번호가 없으면 tailRegex로 최대 3개까지 붙임
+      const tails = after.match(tailRegex);
+      if (!tails) return baseAddress;
+
+      const extra = tails.slice(0, 3).join("").trim();
+      return (baseAddress + " " + extra).trim();
+    }
+
+    function addCopyButtonToParagraph(p, address) {
+      const line = document.createElement("div");
+      line.className = "line";
+
+      const text = document.createElement("div");
+      text.className = "text";
+
+      // XSS 방지: 원문은 textContent 기반으로 처리 후, 주소만 하이라이트
+      const safe = p.textContent;
+
+      // 주소가 여러 번 등장하거나 일부만 치환되는 경우를 피하려면, 첫 1회만 하이라이트
+      const highlighted = safe.replace(address, `<span class="address-highlight">${address}</span>`);
+      text.innerHTML = highlighted + ` <span class="badge">주소 인식</span>`;
+
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "btn-copy";
+      btn.textContent = "주소 복사";
+
+      btn.addEventListener("click", async () => {
+        const ok = await copyTextSafe(address);
+
+        if (ok) {
+          const prev = btn.textContent;
+          btn.textContent = "복사됨";
+          setTimeout(() => (btn.textContent = prev), 1200);
+        } else {
+          alert("복사에 실패했습니다. 이 환경에서는 클립보드 접근이 차단되어 있을 수 있습니다.\n주소를 드래그해 Ctrl+C로 복사해 주세요.");
+        }
+      });
+
+      line.appendChild(text);
+      line.appendChild(btn);
+
+      // 기존 p를 교체
+      p.replaceWith(line);
+    }
+
+    // ✅ 본문 내 문단(p)들을 검사해서 주소 포함 문단만 버튼 생성
+    document.querySelectorAll("#post p").forEach(p => {
+      const t = p.textContent.trim();
+      const m = t.match(addressRegex);
+      if (!m) return;
+
+      const baseAddress = m[0];
+      const fullAddress = enhanceAddressFromParagraph(t, baseAddress);
+
+      addCopyButtonToParagraph(p, fullAddress);
+    });
+  </script>
+</body>
+</html>
+
+
+</body>
+</html>
