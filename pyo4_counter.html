@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+
+<style id="webmakerstyle">
+
+</style>
+</head>
+<body>
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>표4 글자수 시뮬레이터</title>
+<style>
+body{
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans KR", Arial, sans-serif;
+  background:#f6f7f9;
+  padding:24px;
+}
+.wrap{max-width:900px;margin:0 auto;}
+.card{
+  background:#fff;
+  border:1px solid #e5e7eb;
+  border-radius:14px;
+  padding:20px;
+  box-shadow:0 8px 20px rgba(0,0,0,.05);
+}
+h1{font-size:18px;margin-bottom:10px;}
+.hint{font-size:13px;color:#555;margin-bottom:14px;}
+.ta-wrap{position:relative;}
+textarea{
+  width:100%;
+  height:320px;
+  resize:vertical;
+  border:1px solid #cfd6e4;
+  border-radius:12px;
+  padding:14px 14px 44px 14px;
+  font-size:15px;
+  line-height:1.6;
+  box-sizing:border-box;
+}
+textarea:focus{
+  border-color:#7aa7ff;
+  box-shadow:0 0 0 3px rgba(122,167,255,.2);
+  outline:none;
+}
+.status{
+  position:absolute;
+  left:12px;
+  bottom:10px;
+  background:#f3f4f6;
+  border:1px solid #e5e7eb;
+  border-radius:999px;
+  padding:6px 12px;
+  font-size:12px;
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+.count{font-weight:700;}
+.msg{font-weight:600;}
+.bad{color:#b91c1c;}
+.ok{color:#047857;}
+.over{color:#b45309;}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="card">
+    <h1>표4 글자수 시뮬레이터</h1>
+    <div class="hint">
+      공란(띄어쓰기) 포함 기준: 600~700자 권장
+    </div>
+
+    <div class="ta-wrap">
+      <textarea id="text" placeholder="표4 원고를 입력하세요."></textarea>
+
+      <div class="status">
+        <span>글자수: <span id="count" class="count">0</span>자</span>
+        <span id="message" class="msg bad">최소 600자 이상 작성해 주세요.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const MIN = 600;
+const MAX = 700;
+
+const textarea = document.getElementById("text");
+const countEl = document.getElementById("count");
+const msgEl = document.getElementById("message");
+
+function updateCount(){
+  const text = textarea.value;
+  const length = text.length; // 공란 포함
+  countEl.textContent = length;
+
+  msgEl.classList.remove("bad","ok","over");
+
+  if(length < MIN){
+    msgEl.textContent = "최소 600자 이상 작성해 주세요.";
+    msgEl.classList.add("bad");
+  }else if(length <= MAX){
+    msgEl.textContent = "적정 분량입니다.";
+    msgEl.classList.add("ok");
+  }else{
+    msgEl.textContent = "700자를 초과했습니다.";
+    msgEl.classList.add("over");
+  }
+}
+
+textarea.addEventListener("input", updateCount);
+updateCount();
+</script>
+
+</body>
+</html>
+
+
+</body>
+</html>
